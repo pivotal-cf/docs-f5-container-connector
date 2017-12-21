@@ -1,13 +1,19 @@
 ---
-title: F5 Container Connector for PCF v1.0.1
+title: F5 Container Connector for PCF
 owner: Partners
 ---
 
-This documentation describes the F5 Container Connector for Pivotal Cloud Foundry (PCF). The F5 Container Connector for for PCF enables applications started in PCF to automatically be accessed through a  F5 BIG-IP with all policies and profiles applied.
+This documentation describes the F5 Container Connector for Pivotal Cloud Foundry (PCF). The F5 Container Connector 
+for PCF enables applications started in PCF to automatically be accessed through an  F5 BIG-IP with all policies and profiles applied.
 
 ## <a id='overview'></a>Overview
 
-The F5 Container Connector for PCF is an app that runs inside your PCF environment and watches for apps to start or stop.  As your apps start and stop, F5 Container Connector for PCF talks to an F5 BIG-IP that is running above your PCF environment and providing secure access while mimicking the functionality of the PCF GO Router. The started app is configured for access automatically, while applying pre-configured policies and profiles to that access.  When the app is stopped, the BIG-IP configuration for that app is removed automatically.  This allows Developers/App Managers to run their applications automatically without having to wait for IT/NetOps to configure the BIG-IP for access from "Outside." 
+The F5 Container Connector for PCF is an app that runs inside your PCF environment and watches for apps to start or 
+stop.  As your apps start and stop, F5 Container Connector for PCF talks to an F5 BIG-IP that is running above your 
+PCF environment and providing secure access while mimicking the functionality of the PCF GO Router. 
+The started app is configured for access automatically, while applying pre-configured policies and profiles to that access.
+When the app is stopped, the BIG-IP configuration for that app is removed automatically.
+This allows Developers/App Managers to run their applications automatically without having to wait for IT/NetOps to configure the BIG-IP for access from "Outside." 
 
 ## <a id='features'></a>Key Features.
 
@@ -33,7 +39,7 @@ The following table provides version and version-support information about PRODU
     </tr>
     <tr>
         <td>Release date</td>
-        <td>November 30, 2017</td>
+        <td>December 29, 2017</td>
     </tr>
     <tr>
         <td>Software component version</td>
@@ -41,15 +47,15 @@ The following table provides version and version-support information about PRODU
     </tr>
     <tr>
         <td>Compatible Ops Manager version(s)</td>
-        <td>Tested on v1.10</td>
+        <td>v1.10.x</td>
     </tr>
     <tr>
         <td>Compatible Elastic Runtime version(s)</td>
-        <td>Tested on v1.10.13</td>
+        <td>v1.10.x</td>
     </tr>
     <tr>
         <td>IaaS support</td>
-        <td>Anything PCF runs on.</td>
+        <td>AWS, Azure, GCP, OpenStack, and vSphere</td>
     </tr>
     <tr>
         <td>IPsec support?</td>
