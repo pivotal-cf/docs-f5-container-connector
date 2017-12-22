@@ -3,23 +3,36 @@ title: Using F5 Container Connector for PCF
 owner: Partners
 ---
 
-This topic describes how to use F5 Container Connector for PCF.
+This topic describes how to use F5 Container Connector for Pivotal Cloud Foundry (PCF).
 
 ##<a id='using'></a> Using F5 Container Connector for PCF
 
-Once the F5 Container Connector for PCF is installed, there is no modification of the configuration without doing a re-install.  
+Once the F5 Container Connector for PCF is installed, you can't make any modifications to the configuration without doing a re-install.  
 
 ## How it works
 
-Once the Container Connector is running, it uses the login credentials you specified to log into both the NATS Event bus and the Router API of your PCF environment to watch for Apps starting and stopping.  On the initial start up, it collects information about currently running Apps and 'pushes' that information over to the F5 BIG-IP where it sets up a dedicated policy rule to match incoming requests Host field with the Apps FQDN as captured from the Event bus. The BIG-IP will create a Load Balancing Pool of all the running 'containers' of the App for proper load balancing of them.  When an App is stopped, the Container Connector tells the BIG-IP to remove the LB Pool and Policy Rule of the app, so that access through the BIG-IP is removed. The BIG-IP is updated on a frequent basis for any changes to the apps that are running.  Container Connector assumes it has full control of the BIG-IP Partition you specified, and will remove any non-Container Connector configuration objects it finds in that Partition.
+Once the Container Connector is running, it uses the login credentials you specified to log into both the NATS Event 
+Bus and the Router API of your PCF environment to watch for apps starting and stopping. 
+On the initial start up, the f5 Container Connector for PCF collects information about currently running apps and 
+'pushes' that information over to the F5 BIG-IP where it sets up a dedicated policy rule to match incoming requests 
+Host field with the apps FQDN as captured from the Event Bus. The BIG-IP will create a Load Balancing Pool of all the 
+running 'containers' of the app for proper load balancing. When an app is stopped, the Container Connector tells the 
+BIG-IP to remove the Load Balancing Pool and Policy Rule of the app, so that access through the BIG-IP is removed. 
+The BIG-IP is updated on a frequent basis for any changes to the apps that are running. The f5 Container Connector fo 
+PCF assumes it has full control of the BIG-IP Partition you specified, and will remove any non-Container Connector configuration objects it finds in that Partition.
 
 ## Troubleshooting
 
-Since the F5 Container Connector for PCF runs as an App inside the PCF environment, you can use the ``cf logs`` command to see what is going on.
+Since the F5 Container Connector for PCF runs as an app inside the PCF environment, you can use the ``cf logs`` commandto see the logs.
 
-If configuration objects are not being created on the assigned BIG-IP partition, check the logs for any communication errors to ensure you have the IP, Username, Password configured correctly.
+If configuration objects are not being created on the assigned BIG-IP partition, check the logs for any communication errors to ensure you have the IP, Username, and Password configured correctly.
 
-If you are seeing a large number of HTTP 404 errors in the logs, this usually is a symptom of the Container Connector having problems creating/modifying/deleting configuration objects in the BIG-IP Partition.  If you have manually modified the Container Connnector's Virtual Server, that can lock Container Connector out.  You will need to do a ``cf stop`` on the Container Connector, delete all the Pools and the Virtual Server in the Container Connector's Partition, and then do a `cf start` command on the Container Connector.  It should then be able to re-add the Virtual and all the Pools and operate in a correct manner.
+If you are seeing a large number of HTTP 404 errors in the logs, this usually is a symptom of the Container Connector 
+having problems creating, modifying, or deleting configuration objects in the BIG-IP Partition.
+If you have manually modified the Container Connnector's Virtual Server, that can lock the Container Connector out.
+You will need to do a ``cf stop`` on the Container Connector, delete all the Load Balancing Pools and the Virtual 
+Server in the Container Connector's Partition, and then do a `cf start` command on the Container Connector.  
+It should then be able to re-add the Virtual Server and all the Load Balancing Pools and operate in the correct manner.
 
 
 
