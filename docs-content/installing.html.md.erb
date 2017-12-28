@@ -1,28 +1,147 @@
 ---
-title: Installing and Configuring YOUR-PRODUCT-NAME
+title: Installing and Configuring F5 Container Connector for PCF
 owner: Partners
 ---
 
-This topic describes how to install and configure YOUR-PRODUCT-NAME.
+This topic describes how to install and configure F5 Container Connector for Pivotal Cloud Foundry (PCF).
 
-##<a id='install'></a> Install and Configure YOUR-PRODUCT-NAME
+##<a id='install'></a> Install and Configure F5 Container Connector for PCF
 
 1. Download the product file from Pivotal Network.
 
-1. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file. 
+2. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file. 
 
-1. Under the **Import a Product** button, click **+** next to the version number of YOUR-PRODUCT-NAME. 
-This adds the tile to your staging area.
+3. Under the **Import a Product** button, click **+** next to the version number of F5 Container Connector for PCF. 
+  This adds the tile to your staging area.
 
-1. Click the newly added **YOUR-PRODUCT-NAME** tile.
+4. Click the newly added **F5 Container Connector for PCF** tile.
 
-1. **This portion of the procedure should tell the users how to configure the newly added tile by
-walking them through the sections. Which fields should they fill out? What are the different
-checkboxes? Include relevant screenshots here.** 
+5. Under the Settings tab, you will need to configure a few things:
 
-1. Click **Save**.
+  1. As with all Tiles, you will need to assign any Availability Zone, and a network where the Container Connector will connect with.
 
-1. Return to the Ops Manager Installation Dashboard and click **Apply changes** to install YOUR-PRODUCT-NAME tile.
+    ![Config1](.\config1.png)
 
-**If needed, include additional configuration information below. For example, maybe there are
-configuration options not required for installation but which could be useful for certain users.**
+  2. Under the Connection Information page, there are a number of fields that need to be filled out in order for the Container Connector to work correctly:
+
+     ![ Config2](.\config2.png) 
+
+     1. **BIG-IP IP Address or FQDN** - This would be the IP address of either the MGMT interface, or one of the other interfaces' configured to handle MGMT traffic.  This can also be an FQDN, as long as PCF can resolve it.
+     2. **BIG-IP Username** and **BIG-IP Password** - This needs to be a BIG-IP username/password for an account that has 'admin' privileges -- like admin.
+     3. **BIG-IP Partition** - This is the name of the Partition on the BIG-IP that you have created specifically for Container Connector's sole use.  All the App connection information will go in this partition.
+     4. **BIG-IP Virtual Server IP Address** - This is an IP address that will be the entry point for all the PCF Apps. Wildcard DNS entries should reference this IP address for App access.
+     5. **BIG-IP Policies** - Full path to a BIG-IP Policy object (I.E. */Common/Valid_URL*).  This is where you can enforce security, add X-Headers to requests, etc.
+
+     ![Config3](.\config3.png)
+
+     6. **BIG-IP Profiles** - Full path to a BIG-IP Profile object.  This can be any valid traffic profile.
+     7. **BIG-IP Health Monitors** - Full path to a BIG-IP Health Monitor that will be used to determine the health of all the Apps running in the PCF environment.
+     8. **NATS Host IP Address** - This can be found in the Pivotal Elastic Runtime, under the *Status* tab.
+     9. **NATS Host Port** - Unless you have modified the default, this should remain at '4222'.
+     10. **NATS User Password** - This can be found in the Pivotal Elastic Runtime, under the *Credentials* tab. Look for the 'NATS' line, and click on the *Link to Credential* link of the 'Credentials' -- NOT the 'VM Credentials'.  The password will be contained in the *password* field of the JSON text that is returned.
+     11. **OAuth Endpoint** - This is the FQDN of the *UAA* service.  By default, this is "uaa.", plus your **System Domain** entry from the **Domains** page of the Pivotal Elastic Runtime Settings tab.
+     12. **OAuth Secret** - This can be found in the Pivotal Elastic Runtime, under the *Credentials* tab. Look for the 'UAA' line, and go down to the 'Gorouter Client Credentials' line in that section, and click on the *Link to Credential* link.  The password will be contained in the *password* field of the JSON text that is returned.
+     13. **PCF API Endpoint** - This is the FQDN of the *API* service. By default, this is "api.", plus your **System Domain** entry from the **Domains** page of the Pivotal Elastic Runtime Settings tab.
+
+6. Click **Save**.
+
+7. Return to the Ops Manager Installation Dashboard and click **Apply changes** to install F5 Container Connector for PCF tile.
+
+## Manual Install
+
+The F5 Container Connector for PCF can also be installed manually to bypass certain limitations of the current PivNet Tile architecture. If you want the Container Connector installed into a specific Org/Space, you will need to do a manual install so you can specify which Org/Space you want it installed into.  The Container Connector will work in any Org/Space, but some organization want it in a specific Org/Space for administration purposes.  A manual install is also an option if you run into any issues with the Tile installing correctly.  The manual install process also has the advantage of taking less than a minute to install, verses the Tile install process, which can by much longer.
+
+The F5 Container Connector for PCF is located up on the Public Docker Registry (https://hub.docker.com/r/f5networks/cf-bigip-ctlr/) and can be "pulled" down from within a *cf push* command.
+
+How to do the manual install:
+
+1. First you will need to create a cf push manifest file.  This tells PCF what the app should be named, how to check its health, and most importantly, sets up the environment variables for the Container Connector that stores its configuration information.
+
+   Below is an example *manifest.yml* file that you can use as the basis for your file.  You will need to modify the '{}' fields with information that pertains to your PCF installation:
+
+   ```
+   applications:
+     - name: {Appname - cc4pcf is what we have been using.}
+       health-check-type: http
+       health-check-http-endpoint: /health
+       routes:
+         - route: {App Route - like cc4pcf.apps.company.com}
+       env:
+         BIGIP_CTLR_CFG: |
+             bigip:
+               url: https://{IP Address of BIG-IP MGMT interface}
+               user: {BIG-IP Username that has 'admin' rights}
+               pass: {Password for above Username}
+               partition:
+                 - {Partition for Container Connector's sole use - like 'pcf'}
+               balance: round-robin
+               verify_interval: 1000000
+               external_addr: {BIG-IP Virtual Server IP Address for external connections}
+               policies:
+                 - {BIG-IP Policy path #1 - like '/Common/my-policy'}
+                 - {BIG-IP Policy path #2 - multiple policies can be defined}
+               profiles:
+                 - {BIG-IP Profile path #1 - like '/Common/forwarded-for'}
+                 - {BIG-IP Profile path #2 - multiple profiles can be defined}
+               health_monitors:
+                 - {BIG-IP Monitor path #1 - like '/Common/tcp_half_open'}
+                 - {BIG-IP Monitor path #2 - multiple health monitors can be defined}
+
+             status:
+               user: admin
+               pass: admin
+             nats:
+               - host: {IP Address of NATS host}
+                 port: {Port of NATS service - default is 4222}
+                 user: nats
+                 pass: {Admin password of 'nats' user}
+
+             logging:
+               file: /tmp/cf-bigip.ctlr.log
+               syslog: vcap.cf-bigip-ctlr
+               level: info
+               loggregator_enabled: false
+               metron_address: "localhost:3457"
+
+             go_max_procs: -1
+             prune_stale_droplets_interval: 30s
+             droplet_stale_threshold: 120s
+             suspend_pruning_if_nats_unavailable: false
+
+             oauth:
+               token_endpoint: {FQDN of UAA Service - like 'uaa.service.company.com'}
+               client_name: "gorouter"
+               client_secret: {Gorouter Client Credentials}
+               port: 443
+               skip_ssl_validation: true
+               ca_certs:
+
+             routing_api:
+               uri: {URI of API Serivce - like 'api.service.company.com'}
+               port: 80
+               auth_disabled: false
+
+             start_response_delay_interval: 20s
+
+             token_fetcher_max_retries: 3
+             token_fetcher_retry_interval: 5s
+             token_fetcher_expiration_buffer_time: 30
+
+   ```
+
+   A couple things to note:
+
+   1. You can configure multiple Policies and Profiles - one per line - in the appropriate sections above. The Tile configuration only allows for one.
+   2. Your endpoints may have a different configuration from the examples used above.  They all default to whatever is setup for the 'service' domain in the ERT Domain configuration. Check with your PCF administrator for your
+   3. We have used default IP ports for most of the PCF services, but if your PCF installation uses different ports, you will need to do the manual install in order to specify the different port values.
+   4. The *status* section of the Manifest file is for BasicAuth access to a '/routes' endpoint on the Container Connector. This API will return all the running Apps that it knows about in a JSON format.
+
+2. Do a 'cf push' command to finish the install
+
+   ```
+   cf push cc4pcf -f ./manifest.yml -o f5networks/cf-bigip-ctlr -k 128M -m 128M
+   ```
+
+   This assumes that your *manifest.yml* file is in the local directory.  The ``-k 128M -m 128M`` is optional to limit the amount of Memory and Disk space to 128 Mb, since PCF defaults to 1 Gb for each.
+
+3. Install complete.  You can log into your BIG-IP and check to make sure there is a 'routing-vip-http' virtual service.  If its not there, please see the *Troubleshooting* section of the documentation.
