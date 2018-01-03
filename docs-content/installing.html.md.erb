@@ -5,32 +5,26 @@ owner: Partners
 
 This topic describes how to install and configure F5 Container Connector for Pivotal Cloud Foundry (PCF).
 
-##<a id='install'></a> Installing and Configuring F5 Container Connector for PCF
-<ol>
-  <li>Download the product file from <a href="https://network.pivotal.io/">Pivotal Network</a>.</li>
-  <li>Navigate to the Ops Manager Installation Dashboard and click <strong>Import a Product</strong> to upload the product file.</li>
-  <li>Under the <strong>Import a Product</strong> button, click the plus sign (<strong>+</strong>) next to the version number of F5 Container Connector for PCF. This adds the tile to your staging area.
-  </li>
-  <li>Click the newly added <strong>F5 Container Connector for PCF</strong> tile.</li>
-  <li>Under the <strong>Settings</strong> tab, configure the following fields:
-    <ol>
-      <li>Assign an Availability Zone and a network to which the Container Connector will connect.<br/>
-        <img src="../images/config1.png" alt="Settings tab">
-      </li>
-      <li>Under the Connection Information page, configure the following fields:<br/>
-      <img src="../images/config2.png">
-      <ul>
-        <li><strong></strong>: </li>
-        <li><strong></strong>: </li>
-        <li><strong></strong>: </li>
-        <li><strong></strong>: </li>
-        <li><strong></strong>: </li>
-      </ul>
-      </li>    
-    </ol>
-  </li>
-  <li></li>
-  <li></li>
+##<a id='install'></a> Install and Configure F5 Container Connector for PCF
+
+1. Download the product file from Pivotal Network.
+
+2. Navigate to the Ops Manager Installation Dashboard and click **Import a Product** to upload the product file. 
+
+3. Under the **Import a Product** button, click **+** next to the version number of F5 Container Connector for PCF. 
+  This adds the tile to your staging area.
+
+4. Click the newly added **F5 Container Connector for PCF** tile.
+
+5. Under the Settings tab, you will need to configure a few things:
+
+  1. As with all Tiles, you will need to assign any Availability Zone, and a network where the Container Connector will connect with.
+
+    ![Config1](.\config1.png)
+
+  2. Under the Connection Information page, there are a number of fields that need to be filled out in order for the Container Connector to work correctly:
+
+     ![ Config2](.\config2.png) 
 
      1. **BIG-IP IP Address or FQDN** - This would be the IP address of either the MGMT interface, or one of the other interfaces' configured to handle MGMT traffic.  This can also be an FQDN, as long as PCF can resolve it.
      2. **BIG-IP Username** and **BIG-IP Password** - This needs to be a BIG-IP username/password for an account that has 'admin' privileges -- like admin.
@@ -38,7 +32,7 @@ This topic describes how to install and configure F5 Container Connector for Piv
      4. **BIG-IP Virtual Server IP Address** - This is an IP address that will be the entry point for all the PCF Apps. Wildcard DNS entries should reference this IP address for App access.
      5. **BIG-IP Policies** - Full path to a BIG-IP Policy object (I.E. */Common/Valid_URL*).  This is where you can enforce security, add X-Headers to requests, etc.
 
-     ![Config3](.\images\config3.png)
+     ![Config3](.\config3.png)
 
      6. **BIG-IP Profiles** - Full path to a BIG-IP Profile object.  This can be any valid traffic profile.
      7. **BIG-IP Health Monitors** - Full path to a BIG-IP Health Monitor that will be used to determine the health of all the Apps running in the PCF environment.
@@ -52,7 +46,7 @@ This topic describes how to install and configure F5 Container Connector for Piv
 6. Click **Save**.
 
 7. Return to the Ops Manager Installation Dashboard and click **Apply changes** to install F5 Container Connector for PCF tile.
-</ol>
+
 ## Manual Install
 
 The F5 Container Connector for PCF can also be installed manually to bypass certain limitations of the current PivNet Tile architecture. If you want the Container Connector installed into a specific Org/Space, you will need to do a manual install so you can specify which Org/Space you want it installed into.  The Container Connector will work in any Org/Space, but some organization want it in a specific Org/Space for administration purposes.  A manual install is also an option if you run into any issues with the Tile installing correctly.  The manual install process also has the advantage of taking less than a minute to install, verses the Tile install process, which can by much longer.
