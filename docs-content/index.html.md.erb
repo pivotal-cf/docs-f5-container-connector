@@ -3,23 +3,20 @@ title: F5 Container Connector for PCF
 owner: Partners
 ---
 
-This documentation describes the F5 Container Connector for Pivotal Cloud Foundry (PCF). The F5 Container Connector 
-for PCF enables applications started in PCF to automatically be accessed through an  F5 BIG-IP with all policies and profiles applied.
+This documentation describes the F5 Container Connector for Pivotal Cloud Foundry (PCF). The F5 Container Connector for PCF enables applications started in PCF to be accessed automatically through an F5 BIG-IP with all policies and profiles applied.
 
 ## <a id='overview'></a>Overview
 
-The F5 Container Connector for PCF is an app that runs inside your PCF environment and watches for apps to start or 
-stop. As your apps start and stop, F5 Container Connector for PCF talks to an F5 BIG-IP that is running above your 
-PCF environment and providing secure access while mimicking the functionality of the PCF GO Router. The started app is configured for access automatically, while applying pre-configured policies and profiles to that access. When the app is stopped, the BIG-IP configuration for that app is removed automatically. This allows developers/app managers to run their applications automatically without having to wait for IT/NetOps to configure the BIG-IP for access from "Outside." 
+The F5 Container Connector for PCF is an app that runs inside your PCF environment and watches for apps to start or stop. As your apps start and stop, F5 Container Connector for PCF talks to an F5 BIG-IP that is running above your PCF environment and providing secure access while mimicking the functionality of the PCF Gorouter. The started app is configured for access automatically, while applying pre-configured policies and profiles to that access. When the app is stopped, the BIG-IP configuration for that app is removed automatically. This allows developers and app managers to run their applications automatically without having to wait for IT/NetOps to configure the BIG-IP for access from outside the deployment. 
 
 ## <a id='features'></a>Key Features
 
 F5 Container Connector for PCF includes the following key features:
 
-* Automatic access to your apps from "Outside".
-* Hands-Free auto-configuration of an F5 BIG-IP.
+* Automatic access to your apps from outside your deployment.
+* Hands-free auto-configuration of an F5 BIG-IP.
 * IT/NetOps involvement is not required once the BIG-IP has been configured for access.
-* Can be operated in conjunction with the GO Router. Access to apps can be gained through either the GO Router, the BIG-IP, or both.
+* Can be operated in conjunction with the Gorouter. Access to apps can be gained through either the Gorouter, the BIG-IP, or both.
 
 
 
@@ -62,12 +59,12 @@ The following table provides version and version-support information about PRODU
 
 ## <a id="reqs"></a>Requirements
 
-F5 Container Connector for PCF has the following requirements:
+F5 Container Connector for PCF requires the following:
 
 * An F5 BIG-IP to connect to. This BIG-IP should be placed in the network to provide access down into the PCF environment. It will need to be licensed in order to pass traffic through.
 * Any F5 BIG-IP form (Chassis/Blades, Appliance, Virtual Edition) can be used, but be mindful of your throughput requirements and that your BIG-IP is sized to handle that throughput.
 * The F5 BIG-IP needs to be running v12.1 or greater. You will need to have a separate Partition configured that the F5 Container Connector for PCF will use exclusively.  
-* The F5 BIG-IP needs network connectivity from at least one of its interfaces down into the internal network of the PCF environment.  It should have the same connectivity as your GO Router component.
+* The F5 BIG-IP needs network connectivity from at least one of its interfaces down into the internal network of the PCF environment. It should have the same connectivity as your Gorouter component.
 * Stemcell v3445 installed in Ops Manager.
 * Your PCF environment needs to be enabled for Docker Containers (IE: `cf enable-feature-flag diego_docker`).
 
@@ -75,12 +72,11 @@ F5 Container Connector for PCF has the following requirements:
 
 * v1.0.1 does not log connection information to Loggregator.
 * F5 Container Connector for PCF installs into its own Org (f5-container-connector-for-pcf-org) and Space (f5-container-connector-for-pcf-space). 
-* In v1.0.1, the **BIG-IP Policies** and the **BIG-IP Profiles** entries on the **Connection Information** page can only be configured with just one Policy or Profile.  If you would like to use multiple Policies or Profile, you will need to do a manual install. (See the 'Manual Install' section in the **Installing** part of the documentation.)
+* In v1.0.1, the **BIG-IP Policies** and the **BIG-IP Profiles** entries on the **Connection Information** page can only be configured with just one policy or profile.  If you would like to use multiple policies or profiles, you will need to do a manual install. (See the 'Manual Install' section in the **Installing** part of the documentation.)
 
 ## <a id="feedback"></a>Feedback
 
-If you have a feature request, questions, or information about a bug, please email
-[Pivotal Cloud Foundry Feedback](mailto:pivotal-cf-feedback@pivotal.io) list or contact <a href="https://f5.com/about-us/contact">F5 Networks</a>.
+If you have a feature request, questions, or information about a bug, please email [Pivotal Cloud Foundry Feedback](mailto:pivotal-cf-feedback@pivotal.io) list or contact <a href="https://f5.com/about-us/contact">F5 Networks</a>.
 
 ## <a id='license'></a>License
 
